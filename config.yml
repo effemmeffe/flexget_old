@@ -387,6 +387,7 @@ tasks:
       what:
         - emit_movie_queue: yes
       from:
+        - flexget_archive: [movies]
         - torrentz: good
         - search_rss: https://kickass.unblocked.la/usearch/{{search_term}}/?rss=1
 #        - search_rss: https://kat.cr/usearch/{{ search_term }}/?rss=1
@@ -416,6 +417,7 @@ tasks:
       what:
         - emit_movie_queue: yes
       from:
+        - flexget_archive: [movies]
         - torrentz: good
         - search_rss: https://kickass.unblocked.la/usearch/{{search_term}}/?rss=1
 #        - search_rss: https://kat.cr/usearch/{{ search_term }}/?rss=1

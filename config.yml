@@ -6,6 +6,12 @@ schedules:
     interval:
       hours: 1
 
+
+web_server:
+  bind: 0.0.0.0
+  port: 5050
+api: yes
+webui: yes
       
 ##### TEMPLATES
 #
@@ -92,6 +98,7 @@ templates:
       reject:
         - '*.rar'
         - '*.zip'
+#    archive: [episodes]
 
   ##### Movies config
   #
@@ -106,6 +113,7 @@ templates:
       reject:
         - '*.rar'
         - '*.zip'
+    archive: [movies]
 
   movies-720p:
     tmdb_lookup: yes
@@ -118,6 +126,7 @@ templates:
       reject:
         - '*.rar'
         - '*.zip'
+    archive: [movies]
 
   ##### Pushbullet config
   #
@@ -274,6 +283,7 @@ tasks:
       - torrents
       - transmission-series
       - pushbullet
+    archive: [episodes]
     inputs:
       - rss:
           url: http://torrentz.eu/feedA?good&q=tv

@@ -261,7 +261,7 @@ tasks:
       - transmission-series
       - pushbullet
     filesystem:
-      path: '{{secrets.folder.downseries}}'
+      path: '{{secrets.folder.watchseries}}'
       mask: '*.torrent'
     parsing:
       series: guessit
@@ -363,7 +363,7 @@ tasks:
       - transmission-movies
       - pushbullet
     filesystem:
-      path: '{{secrets.folder.downmovies}}'
+      path: '{{secrets.folder.watchmovies}}'
       mask: '*.torrent'
     parsing:
       movie: guessit

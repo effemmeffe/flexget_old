@@ -72,6 +72,7 @@ templates:
   #
   series:
     thetvdb_lookup: yes
+    trakt_lookup: yes
     include: series.yml
     configure_series:
       from:
@@ -180,9 +181,11 @@ templates:
         - '*.txt'
         - '*[sS]ample*'
         - '*[tT]railer*'
-      content_filename: "{{tvdb_series_name|default(series_name)|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
+      content_filename: "{{trakt_series_name|default(series_name)|pathscrub}} - {{trakt_ep_id|default(series_id)}}{% if trakt_ep_name|default(False) %}: - {{trakt_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
+      #content_filename: "{{tvdb_series_name|default(series_name)|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
       #content_filename: "{{series_name|default(series_name)|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
-      path: "{{secrets.folder.downseries}}{{tvdb_series_name|default(series_name)|pathscrub}}/S{{tvdb_season|pad(2)}}/"
+      path: "{{secrets.folder.downseries}}{{trakt_series_name|default(series_name)|pathscrub}}/S{{trakt_season|pad(2)}}/"
+      #path: "{{secrets.folder.downseries}}{{tvdb_series_name|default(series_name)|pathscrub}}/S{{tvdb_season|pad(2)}}/"
       #path: "{{secrets.folder.downseries}}{{series_name|default(series_name)|pathscrub}}/S{{tvdb_season|pad(2)}}/"
 
   ##### Transmission movies config
@@ -220,6 +223,7 @@ tasks:
       retrieve: files
       regexp: '.*\.(avi|mkv|mp4)$'
     thetvdb_lookup: yes
+    trakt_lookup: yes
     accept_all: yes
     configure_series:
       from:
@@ -240,9 +244,11 @@ tasks:
       list: '{{secrets.trakt.series}}'
       type: shows
     thetvdb_lookup: yes
+    trakt_lookup: yes
     accept_all: yes
     set:
-      title: "{{tvdb_series_name|escape|replace('&#39;', '')}}"
+      title: "{{trakt_series_name|escape|replace('&#39;', '')}}"
+      #title: "{{tvdb_series_name|escape|replace('&#39;', '')}}"
       #title: "{{series_name|escape|replace('&#39;', '')}}"
     exec:
       on_start:
@@ -259,7 +265,7 @@ tasks:
     disable: [seen, seen_info_hash, retry_failed]
     template:
       - transmission-series
-      - pushbullet
+#      - pushbullet
     filesystem:
       path: '{{secrets.folder.watchseries}}'
       mask: '*.torrent'
@@ -267,6 +273,7 @@ tasks:
       series: guessit
     metainfo_series: yes
     thetvdb_lookup: yes
+    trakt_lookup: yes
     accept_all: yes
     exec:
       on_output:
@@ -282,7 +289,7 @@ tasks:
       - regex
       - torrents
       - transmission-series
-      - pushbullet
+#      - pushbullet
     archive: [episodes]
     inputs:
       - rss:
@@ -306,7 +313,7 @@ tasks:
       - regex
       - torrents
       - transmission-series
-      - pushbullet
+#      - pushbullet
     discover:
       ignore_estimations: yes
       interval: 15 minutes
@@ -361,7 +368,7 @@ tasks:
     disable: [seen, seen_info_hash, retry_failed]
     template:
       - transmission-movies
-      - pushbullet
+#      - pushbullet
     filesystem:
       path: '{{secrets.folder.watchmovies}}'
       mask: '*.torrent'
@@ -387,7 +394,7 @@ tasks:
       - regex
       - torrents
       - transmission-movies
-      - pushbullet
+#      - pushbullet
     exists_movie:
       - '{{secrets.folder.downmovies}}'
       - '{{secrets.folder.movies}}'
@@ -417,7 +424,7 @@ tasks:
       - regex
       - torrents
       - transmission-movies
-      - pushbullet
+#      - pushbullet
     exists_movie:
       - '{{secrets.folder.downmovies}}'
       - '{{secrets.folder.movies}}'
@@ -451,15 +458,18 @@ tasks:
 #      series: guessit
     metainfo_series: yes
     thetvdb_lookup: yes
+    trakt_lookup: yes
     accept_all: yes
     regexp:
       reject:
         - \btrailer\b
         - \bsample\b
     move:
-      to: "/media/Tera/Library/TV/{{tvdb_series_name|escape|replace('&#39;', '')|pathscrub}}/S{{tvdb_season|pad(2)}}/"
+      to: "/media/Tera/Library/TV/{{trakt_series_name|escape|replace('&#39;', '')|pathscrub}}/S{{trakt_season|pad(2)}}/"
+      #to: "/media/Tera/Library/TV/{{tvdb_series_name|escape|replace('&#39;', '')|pathscrub}}/S{{tvdb_season|pad(2)}}/"
       #to: "/media/Tera/Library/TV/{{series_name|escape|replace('&#39;', '')|pathscrub}}/S{{series_season|pad(2)}}/"
-      filename: "{{tvdb_series_name|escape|replace('&#39;', '')|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
+filename: "{{trakt_series_name|escape|replace('&#39;', '')|pathscrub}} - {{trakt_ep_id|default(series_id)}}{% if trakt_ep_name|default(False) %}: - {{trakt_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
+      #filename: "{{tvdb_series_name|escape|replace('&#39;', '')|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
       #filename: "{{series_name|escape|replace('&#39;', '')|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
       along:
         - srt
@@ -468,7 +478,8 @@ tasks:
         - en.sub
       clean_source: 100
     template:
-      - pushbullet
+#      - pushbullet
+      - email-template
     subtitle_queue:
       action: add
       path: "{{output}}"
@@ -503,7 +514,8 @@ tasks:
         - en.sub
       clean_source: 100
     template:
-      - pushbullet
+#      - pushbullet
+      - email-template
     subtitle_queue:
       action: add
       path: "{{output}}"
@@ -560,6 +572,7 @@ tasks:
       retrieve: files
       regexp: '.*\.(avi|mkv|mp4)$'
     thetvdb_lookup: yes
+    trakt_lookup: yes
     manipulate:
       - series_season:
           remove: yes
@@ -588,6 +601,7 @@ tasks:
       list: '{{secrets.trakt.series}}'
       type: shows
     thetvdb_lookup: yes
+    trakt_lookup: yes
     if:
       - tvdb_status == 'Ended': accept
     trakt_remove:

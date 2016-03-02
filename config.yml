@@ -234,6 +234,7 @@ tasks:
         tracking: no
 
 
+
   ##### Fetch, format and output trakt series list to temp file
   #
   fetch-series:
@@ -246,6 +247,14 @@ tasks:
     thetvdb_lookup: yes
     trakt_lookup: yes
     accept_all: yes
+    plugin_priority:
+      # manipulate must fix the titles before metainfo_series.
+      manipulate: 255
+    manipulate:
+      - title:
+          replace:
+            regexp: '^[^a-z0-9]*11\.22\.63[^a-z0-9]*'
+            format: '11-22-63.'
     set:
       title: "{{trakt_series_name|escape|replace('&#39;', '')}}"
       #title: "{{tvdb_series_name|escape|replace('&#39;', '')}}"
@@ -478,8 +487,8 @@ tasks:
         - en.sub
       clean_source: 100
     template:
-#      - pushbullet
-      - email-template
+      - pushbullet
+#      - email-template
     subtitle_queue:
       action: add
       path: "{{output}}"
@@ -514,8 +523,8 @@ tasks:
         - en.sub
       clean_source: 100
     template:
-#      - pushbullet
-      - email-template
+      - pushbullet
+#      - email-template
     subtitle_queue:
       action: add
       path: "{{output}}"
@@ -578,6 +587,10 @@ tasks:
           remove: yes
       - series_episode:
           remove: yes
+      - title:
+          replace:
+            regexp: '^[^a-z0-9]*11\.22\.63[^a-z0-9]*'
+            format: '11-22-63.'
     accept_all: yes
     if:
       - tvdb_status == 'Ended': reject

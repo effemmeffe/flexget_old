@@ -463,6 +463,15 @@ tasks:
 # might be needed for some series, but causes issues with "name (year)" based series, like scandal
 #    parsing:
 #      series: guessit
+
+    plugin_priority:
+      # manipulate must fix the titles before metainfo_series.
+      manipulate: 255
+    manipulate:
+      - title:
+          replace:
+            regexp: '^[^a-z0-9]*11\.22\.63[^a-z0-9]*'
+            format: '11-22-63.'
     metainfo_series: yes
     thetvdb_lookup: yes
     trakt_lookup: yes

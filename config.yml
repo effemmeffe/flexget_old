@@ -181,11 +181,11 @@ templates:
         - '*.txt'
         - '*[sS]ample*'
         - '*[tT]railer*'
-      content_filename: "{{trakt_series_name|default(series_name)|pathscrub}} - {{trakt_ep_id|default(series_id)}}{% if trakt_ep_name|default(False) %}: - {{trakt_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
-      #content_filename: "{{tvdb_series_name|default(series_name)|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
+      #content_filename: "{{trakt_series_name|default(series_name)|pathscrub}} - {{trakt_ep_id|default(series_id)}}{% if trakt_ep_name|default(False) %}: - {{trakt_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
+      content_filename: "{{tvdb_series_name|default(series_name)|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
       #content_filename: "{{series_name|default(series_name)|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
-      path: "{{secrets.folder.downseries}}{{trakt_series_name|default(series_name)|pathscrub}}/S{{trakt_season|pad(2)}}/"
-      #path: "{{secrets.folder.downseries}}{{tvdb_series_name|default(series_name)|pathscrub}}/S{{tvdb_season|pad(2)}}/"
+      #path: "{{secrets.folder.downseries}}{{trakt_series_name|default(series_name)|pathscrub}}/S{{trakt_season|pad(2)}}/"
+      path: "{{secrets.folder.downseries}}{{tvdb_series_name|default(series_name)|pathscrub}}/S{{tvdb_season|pad(2)}}/"
       #path: "{{secrets.folder.downseries}}{{series_name|default(series_name)|pathscrub}}/S{{tvdb_season|pad(2)}}/"
 
   ##### Transmission movies config
@@ -254,11 +254,11 @@ tasks:
     manipulate:
       - title:
           replace:
-            regexp: '^[^a-z0-9]*11\.22\.63[^a-z0-9]*'
-            format: '11-22-63.'
+           regexp: '^[^a-z0-9]*11\.22\.63[^a-z0-9]*'
+           format: '11-22-63.'
     set:
-      title: "{{trakt_series_name|escape|replace('&#39;', '')}}"
-      #title: "{{tvdb_series_name|escape|replace('&#39;', '')}}"
+      #title: "{{trakt_series_name|escape|replace('&#39;', '')}}"
+      title: "{{tvdb_series_name|escape|replace('&#39;', '')}}"
       #title: "{{series_name|escape|replace('&#39;', '')}}"
     exec:
       on_start:
@@ -481,11 +481,11 @@ tasks:
         - \btrailer\b
         - \bsample\b
     move:
-      to: "/media/Tera/Library/TV/{{trakt_series_name|escape|replace('&#39;', '')|pathscrub}}/S{{trakt_season|pad(2)}}/"
-      #to: "/media/Tera/Library/TV/{{tvdb_series_name|escape|replace('&#39;', '')|pathscrub}}/S{{tvdb_season|pad(2)}}/"
+      #to: "/media/Tera/Library/TV/{{trakt_series_name|escape|replace('&#39;', '')|pathscrub}}/S{{trakt_season|pad(2)}}/"
+      to: "/media/Tera/Library/TV/{{tvdb_series_name|escape|replace('&#39;', '')|pathscrub}}/S{{tvdb_season|pad(2)}}/"
       #to: "/media/Tera/Library/TV/{{series_name|escape|replace('&#39;', '')|pathscrub}}/S{{series_season|pad(2)}}/"
-      filename: "{{trakt_series_name|escape|replace('&#39;', '')|pathscrub}} - {{trakt_ep_id|default(series_id)}}{% if trakt_ep_name|default(False) %}: - {{trakt_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
-      #filename: "{{tvdb_series_name|escape|replace('&#39;', '')|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
+      #filename: "{{trakt_series_name|escape|replace('&#39;', '')|pathscrub}} - {{trakt_ep_id|default(series_id)}}{% if trakt_ep_name|default(False) %}: - {{trakt_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
+      filename: "{{tvdb_series_name|escape|replace('&#39;', '')|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
       #filename: "{{series_name|escape|replace('&#39;', '')|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
       along:
         - srt

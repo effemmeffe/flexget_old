@@ -1,4 +1,5 @@
-secrets: secrets.yml
+secrets: my_secrets.yml
+
 
 schedules:
   # Run every task every 1 hour
@@ -76,9 +77,6 @@ templates:
     include: series.yml
     configure_series:
       from:
-# Alternative for when trakt fails
-#        thetvdb_favorites:
-#          account_id: '{{secrets.thetvdb.id}}'
         text:
           url: 'file://{{secrets.list.series}}'
           entry:
@@ -254,8 +252,8 @@ tasks:
     manipulate:
       - title:
           replace:
-           regexp: '^[^a-z0-9]*11\.22\.63[^a-z0-9]*'
-           format: '11-22-63.'
+            regexp: '^[^a-z0-9]*11\.22\.63[^a-z0-9]*'
+            format: '11-22-63.'
     set:
       #title: "{{trakt_series_name|escape|replace('&#39;', '')}}"
       title: "{{tvdb_series_name|escape|replace('&#39;', '')}}"
@@ -605,7 +603,8 @@ tasks:
       account: '{{secrets.trakt.account}}'
       list: '{{secrets.trakt.series}}'
     thetvdb_add:
-      account_id: '{{secrets.thetvdb.id}}'
+      username: '{{secrets.thetvdb.user}}'
+      password: '{{secrets.thetvdb.password}}'
 
 
   ##### Clean the series that already ended from trakt series list
@@ -628,7 +627,8 @@ tasks:
       account: '{{secrets.trakt.account}}'
       list: '{{secrets.trakt.series}}'
     thetvdb_remove:
-      account_id: '{{secrets.thetvdb.id}}'
+      username: '{{secrets.thetvdb.user}}'
+      password: '{{secrets.thetvdb.password}}'
 
   ##### final actions
   #

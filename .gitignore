@@ -1,6 +1,7 @@
 # private files #
 #################
-secrets.yml
+my_secrets.yml
+received
 
 
 # Logs and databases #

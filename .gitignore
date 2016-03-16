@@ -1,6 +1,11 @@
 # private files #
 #################
 my_secrets.yml
+
+
+# flexget generated files and folders #
+#######################################
+.config-lock
 received
 
 

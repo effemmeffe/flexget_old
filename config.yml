@@ -635,4 +635,5 @@ tasks:
   final_actions:
     priority: 100
     exec:
-      echo "Execution ended"
+#      echo "Execution ended"
+      kodi-upd.sh

@@ -13,7 +13,7 @@ web_server:
   port: 5050
 api: yes
 webui: yes
-      
+
 ##### TEMPLATES
 #
 templates:
@@ -23,7 +23,7 @@ templates:
     no_entries_ok: yes
     pathscrub: windows
     free_space:
-      path: '{{secrets.folder.root}}'
+      path: '/{{secrets.folder.root}}'
       space: 4096
     # Requires log_filter plugin
     log_filter:
@@ -78,7 +78,7 @@ templates:
     configure_series:
       from:
         text:
-          url: 'file://{{secrets.list.series}}'
+          url: 'file:///{{secrets.list.series}}'
           entry:
             title: "(.*)"
             url: "(.*)"
@@ -179,12 +179,17 @@ templates:
         - '*.txt'
         - '*[sS]ample*'
         - '*[tT]railer*'
+      # trakt lookup
       #content_filename: "{{trakt_series_name|default(series_name)|pathscrub}} - {{trakt_ep_id|default(series_id)}}{% if trakt_ep_name|default(False) %}: - {{trakt_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
+      #path: "/{{secrets.folder.downseries}}{{trakt_series_name|default(series_name)|pathscrub}}/S{{trakt_season|pad(2)}}/"
+
+      # thetvdb lookup
       content_filename: "{{tvdb_series_name|default(series_name)|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
+      path: "/{{secrets.folder.downseries}}{{tvdb_series_name|default(series_name)|pathscrub}}/S{{tvdb_season|pad(2)}}/"
+
+      # builtin lookup
+      #path: "/{{secrets.folder.downseries}}{{series_name|default(series_name)|pathscrub}}/S{{tvdb_season|pad(2)}}/"
       #content_filename: "{{series_name|default(series_name)|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
-      #path: "{{secrets.folder.downseries}}{{trakt_series_name|default(series_name)|pathscrub}}/S{{trakt_season|pad(2)}}/"
-      path: "{{secrets.folder.downseries}}{{tvdb_series_name|default(series_name)|pathscrub}}/S{{tvdb_season|pad(2)}}/"
-      #path: "{{secrets.folder.downseries}}{{series_name|default(series_name)|pathscrub}}/S{{tvdb_season|pad(2)}}/"
 
   ##### Transmission movies config
   #
@@ -201,10 +206,10 @@ templates:
         - '*[sS]ample*'
         - '*[tT]railer*'
       content_filename: "{{tmdb_name|pathscrub}} ({{tmdb_year}}){% if quality|default(False) %}: - [{{quality}}]{% endif %}"
-      path: "{{secrets.folder.downmovies}}{{movie_name|pathscrub}}"
+      path: "/{{secrets.folder.downmovies}}{{movie_name|pathscrub}}"
 
-      
-      
+
+
 ##### TASKS
 #
 tasks:
@@ -216,7 +221,7 @@ tasks:
     interval: 4 hour
     seen: local
     filesystem:
-      path: '{{secrets.folder.series}}'
+      path: '/{{secrets.folder.series}}'
       recursive: yes
       retrieve: files
       regexp: '.*\.(avi|mkv|mp4)$'
@@ -226,7 +231,7 @@ tasks:
     configure_series:
       from:
         filesystem:
-          path: '{{secrets.folder.series}}'
+          path: '/{{secrets.folder.series}}'
           retrieve: dirs
       settings:
         tracking: no
@@ -260,9 +265,9 @@ tasks:
       #title: "{{series_name|escape|replace('&#39;', '')}}"
     exec:
       on_start:
-        phase: rm -f '{{secrets.list.series}}' && touch '{{secrets.list.series}}'
+        phase: rm -f '/{{secrets.list.series}}' && touch '/{{secrets.list.series}}'
       on_output:
-        for_entries: echo "{{title}}" >> '{{secrets.list.series}}'
+        for_entries: echo "{{title}}" >> '/{{secrets.list.series}}'
 
 
   ##### Download episodes from manually downloaded torrents
@@ -275,7 +280,7 @@ tasks:
       - transmission-series
 #      - pushbullet
     filesystem:
-      path: '{{secrets.folder.watchseries}}'
+      path: '/{{secrets.folder.watchseries}}'
       mask: '*.torrent'
     parsing:
       series: guessit
@@ -340,7 +345,7 @@ tasks:
     disable: seen
     interval: 2 hour
     filesystem:
-      path: '{{secrets.folder.movies}}'
+      path: '/{{secrets.folder.movies}}'
       recursive: yes
       retrieve: files
       regexp: '.*\.(avi|mkv|mp4)$'
@@ -377,7 +382,7 @@ tasks:
       - transmission-movies
 #      - pushbullet
     filesystem:
-      path: '{{secrets.folder.watchmovies}}'
+      path: '/{{secrets.folder.watchmovies}}'
       mask: '*.torrent'
     parsing:
       movie: guessit
@@ -403,8 +408,8 @@ tasks:
       - transmission-movies
 #      - pushbullet
     exists_movie:
-      - '{{secrets.folder.downmovies}}'
-      - '{{secrets.folder.movies}}'
+      - '/{{secrets.folder.downmovies}}'
+      - '/{{secrets.folder.movies}}'
     discover:
       interval: 15 minutes
       what:
@@ -432,8 +437,8 @@ tasks:
       - transmission-movies
 #      - pushbullet
     exists_movie:
-      - '{{secrets.folder.downmovies}}'
-      - '{{secrets.folder.movies}}'
+      - '/{{secrets.folder.downmovies}}'
+      - '/{{secrets.folder.movies}}'
     discover:
       interval: 15 minutes
       what:
@@ -454,7 +459,7 @@ tasks:
     priority: 21
     disable: [seen, retry_failed]
     filesystem:
-      path: '{{secrets.folder.downseries}}'
+      path: '/{{secrets.folder.downseries}}'
       recursive: yes
       retrieve: files
       regexp: '.*\.(avi|mkv|mp4)$'
@@ -479,12 +484,19 @@ tasks:
         - \btrailer\b
         - \bsample\b
     move:
+      # trakt lookup
       #to: "/media/Tera/Library/TV/{{trakt_series_name|escape|replace('&#39;', '')|pathscrub}}/S{{trakt_season|pad(2)}}/"
-      to: "/media/Tera/Library/TV/{{tvdb_series_name|escape|replace('&#39;', '')|pathscrub}}/S{{tvdb_season|pad(2)}}/"
-      #to: "/media/Tera/Library/TV/{{series_name|escape|replace('&#39;', '')|pathscrub}}/S{{series_season|pad(2)}}/"
       #filename: "{{trakt_series_name|escape|replace('&#39;', '')|pathscrub}} - {{trakt_ep_id|default(series_id)}}{% if trakt_ep_name|default(False) %}: - {{trakt_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
+
+      # tvdb lookup
+#      to: "/media/Tera/Library/TV/{{tvdb_series_name|escape|replace('&#39;', '')|pathscrub}}/S{{tvdb_season|pad(2)}}/"
+      to: "/'{{secrets.folder.series}}'{{tvdb_series_name|escape|replace('&#39;', '')|pathscrub}}/S{{tvdb_season|pad(2)}}/"
       filename: "{{tvdb_series_name|escape|replace('&#39;', '')|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
+
+      # builtin lookup
+      #to: "/media/Tera/Library/TV/{{series_name|escape|replace('&#39;', '')|pathscrub}}/S{{series_season|pad(2)}}/"
       #filename: "{{series_name|escape|replace('&#39;', '')|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
+
       along:
         - srt
         - sub
@@ -497,7 +509,7 @@ tasks:
     subtitle_queue:
       action: add
       path: "{{output}}"
-      
+
 
 
   ##### Move movies from downloads folder to the movies folder, along with possible subtitles and adding the files to the subtitle queue
@@ -506,7 +518,7 @@ tasks:
     priority: 26
     disable: [seen, retry_failed]
     filesystem:
-      path: '{{secrets.folder.downmovies}}'
+      path: '/{{secrets.folder.downmovies}}'
       recursive: yes
       retrieve: files
       regexp: '.*\.(avi|mkv|mp4)$'
@@ -519,7 +531,8 @@ tasks:
         - \btrailer\b
         - \bsample\b
     move:
-      to: "/media/Tera/Library/Movies/{{tmdb_name|pathscrub}} ({{tmdb_year}})"
+#      to: "/media/Tera/Library/Movies/{{tmdb_name|pathscrub}} ({{tmdb_year}})"
+      to: "'/{{secrets.folder.movies}}'{{tmdb_name|pathscrub}} ({{tmdb_year}})"
       filename: "{{tmdb_name|pathscrub}} ({{tmdb_year}}){% if quality|default(False) %}: - [{{quality}}]{% endif %}"
       along:
         - srt
@@ -554,7 +567,7 @@ tasks:
         - thesubdb
         - tvsubtitles
 
-        
+
   ##### Clean finished torrents from transmission
   #
   clean-transmission:
@@ -566,7 +579,7 @@ tasks:
       password: '{{ secrets.transmission.password }}'
       transmission_seed_limits: yes
 
-      
+
   ##### Update trakt series list from local series folders, excluding the ones that already ended
   #
   update-series-list:
@@ -581,7 +594,7 @@ tasks:
       thetvdb_add: -254
     metainfo_series: yes
     filesystem:
-      path: '{{secrets.folder.series}}'
+      path: '/{{secrets.folder.series}}'
       recursive: yes
       retrieve: files
       regexp: '.*\.(avi|mkv|mp4)$'

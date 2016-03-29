@@ -304,6 +304,8 @@ tasks:
       - transmission-series
 #      - pushbullet
     archive: [episodes]
+    thetvdb_lookup: yes
+    trakt_lookup: yes
     inputs:
       - rss:
           url: http://torrentz.eu/feedA?good&q=tv
@@ -327,6 +329,8 @@ tasks:
       - torrents
       - transmission-series
 #      - pushbullet
+    thetvdb_lookup: yes
+    trakt_lookup: yes
     discover:
       interval: 15 minutes
       what:
@@ -407,6 +411,7 @@ tasks:
       - torrents
       - transmission-movies
 #      - pushbullet
+    tmdb_lookup: yes
     exists_movie:
       - '/{{secrets.folder.downmovies}}'
       - '/{{secrets.folder.movies}}'
@@ -436,6 +441,7 @@ tasks:
       - torrents
       - transmission-movies
 #      - pushbullet
+    tmdb_lookup: yes
     exists_movie:
       - '/{{secrets.folder.downmovies}}'
       - '/{{secrets.folder.movies}}'

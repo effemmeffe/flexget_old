@@ -85,8 +85,8 @@ templates:
       settings:
         identified_by: ep
         timeframe: 15 minutes
-        target: hdtv 720p !h265
-        quality: webrip+ 720p !h265
+        target: hdtv 720p
+        quality: webrip+ 720p
         propers: 16 hours
         specials: no
     content_size:
@@ -104,10 +104,10 @@ templates:
   movies-1080p:
     tmdb_lookup: yes
     movie_queue: accept
-    quality: 1080p webdl+ !h265
+    quality: 1080p webdl+
     content_size:
       min: 1000
-      max: 6000
+      max: 8000
     content_filter:
       reject:
         - '*.rar'
@@ -117,7 +117,7 @@ templates:
   movies-720p:
     tmdb_lookup: yes
     movie_queue: accept
-    quality: 720p webdl+ !h265
+    quality: 720p webdl+
     content_size:
       min: 500
       max: 3000
@@ -623,7 +623,7 @@ tasks:
       list: '{{secrets.trakt.series}}'
     thetvdb_add:
       username: '{{secrets.thetvdb.user}}'
-      password: '{{secrets.thetvdb.password}}'
+      account_id: '{{secrets.thetvdb.account_id}}'
 
 
   ##### Clean the series that already ended from trakt series list
@@ -647,7 +647,7 @@ tasks:
       list: '{{secrets.trakt.series}}'
     thetvdb_remove:
       username: '{{secrets.thetvdb.user}}'
-      password: '{{secrets.thetvdb.password}}'
+      account_id: '{{secrets.thetvdb.account_id}}'
 
   ##### final actions
   #

@@ -7,6 +7,12 @@ my_secrets.yml
 #######################################
 .config-lock
 received
+trakt-movies
+
+
+# python files #
+################
+*.pyc
 
 
 # Logs and databases #

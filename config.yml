@@ -180,16 +180,16 @@ templates:
         - '*[sS]ample*'
         - '*[tT]railer*'
       # trakt lookup
-      #content_filename: "{{trakt_series_name|default(series_name)|pathscrub}} - {{trakt_ep_id|default(series_id)}}{% if trakt_ep_name|default(False) %}: - {{trakt_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
+      #content_filename: "{{trakt_series_name|default(series_name)|pathscrub}} - {{trakt_ep_id|default(series_id)}}{% if trakt_ep_name|default(False) %}: - {{trakt_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}{% if proper_count %} PROPER{% if proper_count > 1 %}{{proper_count}}{% endif %}{% endif %}"
       #path: "/{{secrets.folder.downseries}}{{trakt_series_name|default(series_name)|pathscrub}}/S{{trakt_season|pad(2)}}/"
 
       # thetvdb lookup
-      content_filename: "{{tvdb_series_name|default(series_name)|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
+      content_filename: "{{tvdb_series_name|default(series_name)|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}{% if proper_count %} PROPER{% if proper_count > 1 %}{{proper_count}}{% endif %}{% endif %}"
       path: "/{{secrets.folder.downseries}}{{tvdb_series_name|default(series_name)|pathscrub}}/S{{tvdb_season|pad(2)}}/"
 
       # builtin lookup
+      #content_filename: "{{series_name|default(series_name)|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}{% if proper_count %} PROPER{% if proper_count > 1 %}{{proper_count}}{% endif %}{% endif %}"
       #path: "/{{secrets.folder.downseries}}{{series_name|default(series_name)|pathscrub}}/S{{tvdb_season|pad(2)}}/"
-      #content_filename: "{{series_name|default(series_name)|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
 
   ##### Transmission movies config
   #
@@ -205,7 +205,7 @@ templates:
         - '*.txt'
         - '*[sS]ample*'
         - '*[tT]railer*'
-      content_filename: "{{tmdb_name|pathscrub}} ({{tmdb_year}}){% if quality|default(False) %}: - [{{quality}}]{% endif %}"
+      content_filename: "{{tmdb_name|pathscrub}} ({{tmdb_year}}){% if quality|default(False) %}: - [{{quality}}]{% endif %}{% if proper_count %} PROPER{% if proper_count > 1 %}{{proper_count}}{% endif %}{% endif %}"
       path: "/{{secrets.folder.downmovies}}{{movie_name|pathscrub}}"
 
 
@@ -492,16 +492,16 @@ tasks:
     move:
       # trakt lookup
       #to: "/media/Tera/Library/TV/{{trakt_series_name|escape|replace('&#39;', '')|pathscrub}}/S{{trakt_season|pad(2)}}/"
-      #filename: "{{trakt_series_name|escape|replace('&#39;', '')|pathscrub}} - {{trakt_ep_id|default(series_id)}}{% if trakt_ep_name|default(False) %}: - {{trakt_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
+      #filename: "{{trakt_series_name|escape|replace('&#39;', '')|pathscrub}} - {{trakt_ep_id|default(series_id)}}{% if trakt_ep_name|default(False) %}: - {{trakt_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}{% if proper_count %} PROPER{% if proper_count > 1 %}{{proper_count}}{% endif %}{% endif %}"
 
       # tvdb lookup
 #      to: "/media/Tera/Library/TV/{{tvdb_series_name|escape|replace('&#39;', '')|pathscrub}}/S{{tvdb_season|pad(2)}}/"
       to: "/{{secrets.folder.series}}{{tvdb_series_name|escape|replace('&#39;', '')|pathscrub}}/S{{tvdb_season|pad(2)}}/"
-      filename: "{{tvdb_series_name|escape|replace('&#39;', '')|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
+      filename: "{{tvdb_series_name|escape|replace('&#39;', '')|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}{% if proper_count %} PROPER{% if proper_count > 1 %}{{proper_count}}{% endif %}{% endif %}"
 
       # builtin lookup
       #to: "/media/Tera/Library/TV/{{series_name|escape|replace('&#39;', '')|pathscrub}}/S{{series_season|pad(2)}}/"
-      #filename: "{{series_name|escape|replace('&#39;', '')|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}"
+      #filename: "{{series_name|escape|replace('&#39;', '')|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}{% if proper_count %} PROPER{% if proper_count > 1 %}{{proper_count}}{% endif %}{% endif %}"
 
       along:
         - srt
@@ -539,7 +539,7 @@ tasks:
     move:
 #      to: "/media/Tera/Library/Movies/{{tmdb_name|pathscrub}} ({{tmdb_year}})"
       to: "/{{secrets.folder.movies}}{{tmdb_name|pathscrub}} ({{tmdb_year}})"
-      filename: "{{tmdb_name|pathscrub}} ({{tmdb_year}}){% if quality|default(False) %}: - [{{quality}}]{% endif %}"
+      filename: "{{tmdb_name|pathscrub}} ({{tmdb_year}}){% if quality|default(False) %}: - [{{quality}}]{% endif %}{% if proper_count %} PROPER{% if proper_count > 1 %}{{proper_count}}{% endif %}{% endif %}"
       along:
         - srt
         - sub

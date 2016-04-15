@@ -1,6 +1,7 @@
 # private files #
 #################
 my_secrets.yml
+old_config.yml
 
 
 # flexget generated files and folders #

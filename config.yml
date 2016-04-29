@@ -158,10 +158,13 @@ templates:
 #
   transmission:
     transmission:
-      host: '{{secrets.transmission.host}}'
       port: 9091
+      host: '{{secrets.transmission.host}}'
       username: '{{secrets.transmission.user}}'
-      password: '{{secrets.transmission.pass}}'
+      password: '{{secrets.transmission.password}}'
+#      host: localhost
+#      username: transmission
+#      password: transmission
       main_file_only: yes
       include_subs: yes
       skip_files:
@@ -644,6 +647,7 @@ tasks:
     interval: 1 day
     disable: details
     clean_transmission:
+      host: '{{ secrets.transmission.host }}'
       username: '{{ secrets.transmission.user }}'
       password: '{{ secrets.transmission.password }}'
       transmission_seed_limits: yes

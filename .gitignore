@@ -9,7 +9,9 @@ old_config.yml
 .config-lock
 received
 trakt-movies
+trakt-movies.*
 trakt-series
+trakt-series.*
 
 
 # python files #

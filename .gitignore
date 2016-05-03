@@ -14,6 +14,11 @@ trakt-series
 trakt-series.*
 
 
+# all files to be ignored #
+###########################
+*.ignore
+
+
 # python files #
 ################
 *.pyc

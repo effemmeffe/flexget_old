@@ -513,7 +513,9 @@ tasks:
       - pushbullet-template
 #      - email-template
     filesystem:
-      path: '/{{secrets.folder.downseries}}'
+      path:
+        - '/{{secrets.folder.downseries}}'
+        - '/{{secrets.folder.downmanual}}'
       recursive: yes
       retrieve: files
       regexp: '.*\.(avi|mkv|mp4)$'
@@ -573,7 +575,9 @@ tasks:
       - pushbullet-template
 #      - email-template
     filesystem:
-      path: '/{{secrets.folder.downmovies}}'
+      path:
+        - '/{{secrets.folder.downmovies}}'
+        - '/{{secrets.folder.downmanual}}'
       recursive: yes
       retrieve: files
       regexp: '.*\.(avi|mkv|mp4)$'

@@ -589,9 +589,17 @@ tasks:
         - \btrailer\b
         - \bsample\b
     move:
-#      to: "/media/Tera/Library/Movies/{{tmdb_name|pathscrub}} ({{tmdb_year}})"
-      to: "/{{secrets.folder.movies}}{{tmdb_name|pathscrub}} ({{tmdb_year}})"
-      filename: "{{tmdb_name|pathscrub}} ({{tmdb_year}}){% if quality|default(False) %}: - [{{quality}}]{% endif %}"
+      # builtin lookup
+#      to: "/{{secrets.folder.movies}}{{movie_name|pathscrub}} ({{movie_year}})"
+#      filename: "{{movie_name|pathscrub}} ({{movie_year}}){% if quality|default(False) %}: - [{{quality}}]{% endif %}"
+
+      # trakt lookup
+      to: "/{{secrets.folder.movies}}{{trakt_name|pathscrub}} ({{trakt_year}})"
+      filename: "{{trakt_name|pathscrub}} ({{trakt_year}}){% if quality|default(False) %}: - [{{quality}}]{% endif %}"
+
+      # tmdb lookup
+#      to: "/{{secrets.folder.movies}}{{tmdb_name|pathscrub}} ({{tmdb_year}})"
+#      filename: "{{tmdb_name|pathscrub}} ({{tmdb_year}}){% if quality|default(False) %}: - [{{quality}}]{% endif %}"
       along:
         - srt
         - sub

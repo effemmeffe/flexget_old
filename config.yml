@@ -102,7 +102,7 @@ templates:
     content_size:
       min: 1000
       max: 8000
-    archive: [movies]
+#    archive: [movies]
 
   ##### movies-720p-template: Movies config
   #
@@ -114,7 +114,7 @@ templates:
     content_size:
       min: 500
       max: 3000
-    archive: [movies]
+#    archive: [movies]
 
   ##### pushbullet-template: Pushbullet config
   #
@@ -325,17 +325,17 @@ tasks:
       - transmission-global-template
       - transmission-series-template
 #      - pushbullet-template
-    archive: [episodes]
+#    archive: [episodes]
     inputs:
-      - rss:
-          url: http://torrentz.eu/feedA?good&q=tv
-          all_entries: yes
-      - rss:
-          url: https://kickass.unblocked.la/tv/?rss=1
-          all_entries: yes
 #      - rss:
-#          url: https://kat.cr/tv/?rss=1
+#          url: http://torrentz.eu/feedA?good&q=tv
 #          all_entries: yes
+#      - rss:
+#          url: https://kickass.unblocked.la/tv/?rss=1
+#          all_entries: yes
+      - rss:
+          url: https://kat.cr/tv/?rss=1
+          all_entries: yes
 
 
   ##### download-series-discover-task: Discover and download older episodes and pilots from recently added series, set with interval to avoid spam
@@ -358,8 +358,8 @@ tasks:
             from_start: yes
       from:
         - torrentz: good
-        - search_rss: https://kickass.unblocked.la/usearch/{{search_term}}/?rss=1
-#        - search_rss: https://kat.cr/usearch/{{ search_term }}/?rss=1
+#        - search_rss: https://kickass.unblocked.la/usearch/{{search_term}}/?rss=1
+        - search_rss: https://kat.cr/usearch/{{search_term}}/?rss=1
 
 
   ##### clean-movie-queue-task: Remove manually movies downloaded from the movie queue and trakt list
@@ -454,8 +454,8 @@ tasks:
             strip_dates: yes
       from:
         - torrentz: good
-        - search_rss: https://kickass.unblocked.la/usearch/{{search_term}}/?rss=1
-#        - search_rss: https://kat.cr/usearch/{{ search_term }}/?rss=1
+#        - search_rss: https://kickass.unblocked.la/usearch/{{search_term}}/?rss=1
+        - search_rss: https://kat.cr/usearch/{{search_term}}/?rss=1
     list_queue:
       - trakt_list:
           account: '{{secrets.trakt.account}}'
@@ -490,10 +490,10 @@ tasks:
             type: movies
             strip_dates: yes
       from:
-        - flexget_archive: [movies]
+#        - flexget_archive: [movies]
         - torrentz: good
-        - search_rss: https://kickass.unblocked.la/usearch/{{search_term}}/?rss=1
-#        - search_rss: https://kat.cr/usearch/{{ search_term }}/?rss=1
+#        - search_rss: https://kickass.unblocked.la/usearch/{{search_term}}/?rss=1
+        - search_rss: https://kat.cr/usearch/{{search_term}}/?rss=1
     list_queue:
       - trakt_list:
           account: '{{secrets.trakt.account}}'

@@ -148,7 +148,7 @@ templates:
   #
   torrents-template:
     torrent_alive:
-      min_seeds: 10
+      min_seeds: 1
       reject_for: 15 minutes
     magnets: no
     # Might need to disable if you are getting errors connecting to https sources

@@ -1,11 +1,25 @@
 secrets: my_secrets.yml
 
 
+#schedules:
+#  # Run every task every 1 hour
+#  - tasks: '*'
+#    interval:
+#      hours: 1
+
 schedules:
-  # Run every task every 1 hour
-  - tasks: '*'
-    interval:
-      hours: 1
+  - tasks: ['populate-*', 'clean-*', 'update-*']
+    schedule:
+      hour: 0
+  - tasks: ['purge-*', 'fill-*', '*-rss']
+    schedule:
+      minute: 0,30
+  - tasks: ['*-discover', '*-manual', final_actions]
+    schedule:
+      hour: '*/2'
+  - tasks: ['move-*', download-subtitles]
+    schedule:
+      minute: 15,45
 
 
 web_server:
@@ -80,7 +94,7 @@ templates:
         entry_list: trakt-series
       settings:
         identified_by: ep
-        timeframe: 15 minutes
+        timeframe: 16 hours
         target: hdtv 720p
         quality: webrip+ 720p
         propers: 16 hours
@@ -90,7 +104,6 @@ templates:
     content_filter:
       require:
         - '*.mkv'
-#    archive: [episodes]
 
   ##### movies-1080p-template: Movies config
   #
@@ -102,7 +115,6 @@ templates:
     content_size:
       min: 1000
       max: 8000
-#    archive: [movies]
 
   ##### movies-720p-template: Movies config
   #
@@ -114,7 +126,6 @@ templates:
     content_size:
       min: 500
       max: 3000
-#    archive: [movies]
 
   ##### pushbullet-template: Pushbullet config
   #
@@ -166,9 +177,6 @@ templates:
       host: '{{secrets.transmission.host}}'
       username: '{{secrets.transmission.user}}'
       password: '{{secrets.transmission.password}}'
-#      host: localhost
-#      username: transmission
-#      password: transmission
       main_file_only: yes
       include_subs: yes
       skip_files:
@@ -230,9 +238,9 @@ templates:
 #
 tasks:
 
-  ##### populate-series-db-task: Populates the series database with the files on the library, to avoid duplicate downloads
+  ##### populate-series-db task: Populates the series database with the files on the library, to avoid duplicate downloads
   #
-  populate-series-db-task:
+  populate-series-db:
     priority: 1
     interval: 4 hour
     template:
@@ -253,9 +261,9 @@ tasks:
         tracking: no
 
 
-  ##### purge-series-list-task: Purge the series list to allow full sync with trakt series list
+  ##### purge-series-list task: Purge the series list to allow full sync with trakt series list
   #
-  purge-series-list-task:
+  purge-series-list:
     priority: 2
     template:
       - disable-seen-retry-template
@@ -265,9 +273,9 @@ tasks:
       - entry_list: trakt-series
 
 
-  ##### fill-series-list-task: Fetch, format and output trakt series list to a custom entry list
+  ##### fill-series-list task: Fetch, format and output trakt series list to a custom entry list
   #
-  fill-series-list-task:
+  fill-series-list:
     priority: 3
     template:
       - disable-seen-retry-template
@@ -277,14 +285,14 @@ tasks:
       list: '{{secrets.trakt.series}}'
       type: shows
     accept_all: yes
-    plugin_priority:
-      # manipulate must fix the titles before metainfo_series.
-      manipulate: 255
-    manipulate:
-      - title:
-          replace:
-            regexp: '^[^a-z0-9]*11\.22\.63[^a-z0-9]*'
-            format: '11-22-63.'
+#    plugin_priority:
+#      # manipulate must fix the titles before metainfo_series.
+#      manipulate: 255
+#    manipulate:
+#      - title:
+#          replace:
+#            regexp: '^[^a-z0-9]*11\.22\.63[^a-z0-9]*'
+#            format: '11-22-63.'
     set:
       #title: "{{trakt_series_name|escape|replace('&#39;', '')}}"
       title: "{{tvdb_series_name|escape|replace('&#39;', '')}}"
@@ -293,11 +301,10 @@ tasks:
       - entry_list: trakt-series
 
 
-  ##### download-series-manual-task: Download episodes from manually downloaded torrents
+  ##### download-series-manual task: Download episodes from manually downloaded torrents
   #
-  download-series-manual-task:
+  download-series-manual:
     priority: 4
-#    manual: yes
     template:
       - disable-seen-retry-template
       - series-metainfo-template
@@ -315,9 +322,9 @@ tasks:
         for_accepted: rm -f "{{location}}"
 
 
-  ##### download-series-rss-task: Download episodes from RSS feeds
+  ##### download-series-rss task: Download episodes from RSS feeds
   #
-  download-series-rss-task:
+  download-series-rss:
     priority: 5
     template:
       - series-config-template
@@ -326,7 +333,6 @@ tasks:
       - transmission-global-template
       - transmission-series-template
 #      - pushbullet-template
-#    archive: [episodes]
     inputs:
 #      - rss:
 #          url: http://torrentz.eu/feedA?good&q=tv
@@ -339,9 +345,9 @@ tasks:
           all_entries: yes
 
 
-  ##### download-series-discover-task: Discover and download older episodes and pilots from recently added series, set with interval to avoid spam
+  ##### download-series-discover task: Discover and download older episodes and pilots from recently added series, set with interval to avoid spam
   #
-  download-series-discover-task:
+  download-series-discover:
     priority: 6
     interval: 4 hour
     template:
@@ -355,17 +361,19 @@ tasks:
       release_estimations: ignore
       interval: 15 minutes
       what:
-        - emit_series:
-            from_start: yes
+        - next_series_episodes: yes
+        #- emit_series:
+        #    from_start: yes
       from:
         - torrentz: good
 #        - search_rss: https://kickass.unblocked.la/usearch/{{search_term}}/?rss=1
         - search_rss: https://kat.cr/usearch/{{search_term}}/?rss=1
+        - piratebay: yes
 
 
-  ##### clean-movie-queue-task: Remove manually movies downloaded from the movie queue and trakt list
+  ##### clean-movie-queue task: Remove manually movies downloaded from the movie queue and trakt list
   #
-  clean-movie-queue-task:
+  clean-movie-queue:
     priority: 11
     interval: 2 hour
     template:
@@ -386,13 +394,10 @@ tasks:
       movie: guessit
 
 
-  ##### fill-movie-queue-task: Fill the movie queue with movies from trakt list
+  ##### fill-movie-queue task: Fill the movie queue with movies from trakt list
   #
-  fill-movie-queue-task:
+  fill-movie-queue:
     priority: 12
-#    template:
-#      - disable-seen-retry-template
-#      - movies-metainfo-template
     trakt_list:
       account: '{{secrets.trakt.account}}'
       list: '{{secrets.trakt.movies}}'
@@ -403,11 +408,10 @@ tasks:
       - movie_list: trakt-movies
 
 
-  ##### download-movies-manual-task: Download movies manually downloaded torrents
+  ##### download-movies-manual task: Download movies manually downloaded torrents
   #
-  download-movies-manual-task:
+  download-movies-manual:
     priority: 15
-#    manual: yes
     template:
       - disable-seen-retry-template
       - movies-metainfo-template
@@ -424,14 +428,15 @@ tasks:
       on_output:
         for_accepted: rm -f "{{location}}"
     list_remove:
+      - movie_list: trakt-movies
       - trakt_list:
           account: '{{secrets.trakt.account}}'
           list: '{{secrets.trakt.movies}}'
 
 
-  ##### download-movies-1080p-task: Download 1080p movies
+  ##### download-movies-1080p-discover task: Download 1080p movies
   #
-  download-movies-1080p-task:
+  download-movies-1080p-discover:
     priority: 16
     interval: 2 hour
     template:
@@ -448,26 +453,35 @@ tasks:
       release_estimations: ignore
       interval: 15 minutes
       what:
-        - trakt_list:
-            account: '{{secrets.trakt.account}}'
-            list: '{{secrets.trakt.movies}}'
-            type: movies
-            strip_dates: yes
+        - movie_list: trakt-movies
+#        - trakt_list:
+#            account: '{{secrets.trakt.account}}'
+#            list: '{{secrets.trakt.movies}}'
+#            type: movies
+#            strip_dates: yes
       from:
         - torrentz: good
 #        - search_rss: https://kickass.unblocked.la/usearch/{{search_term}}/?rss=1
         - search_rss: https://kat.cr/usearch/{{search_term}}/?rss=1
-    list_queue:
+#    list_queue:
+    list_match:
+      from:
+        - movie_list: trakt-movies
+      single_match: no
+#     - trakt_list:
+#          account: '{{secrets.trakt.account}}'
+#          list: '{{secrets.trakt.movies}}'
+#          type: movies
+#          strip_dates: yes
+    list_remove:
       - trakt_list:
           account: '{{secrets.trakt.account}}'
           list: '{{secrets.trakt.movies}}'
-          type: movies
-          strip_dates: yes
 
 
-  ##### download-movies-720p-task: Download 720p movies with 1 day delay from higher quality
+  ##### download-movies-720p-discover task: Download 720p movies with 1 day delay from higher quality
   #
-  download-movies-720p-task:
+  download-movies-720p-discover:
     priority: 17
     interval: 4 hour
     delay: 1 day
@@ -485,28 +499,39 @@ tasks:
       release_estimations: ignore
       interval: 15 minutes
       what:
-        - trakt_list:
-            account: '{{secrets.trakt.account}}'
-            list: '{{secrets.trakt.movies}}'
-            type: movies
-            strip_dates: yes
+        - movie_list: trakt-movies
+#        - trakt_list:
+#            account: '{{secrets.trakt.account}}'
+#            list: '{{secrets.trakt.movies}}'
+#            type: movies
+#            strip_dates: yes
       from:
 #        - flexget_archive: [movies]
         - torrentz: good
 #        - search_rss: https://kickass.unblocked.la/usearch/{{search_term}}/?rss=1
         - search_rss: https://kat.cr/usearch/{{search_term}}/?rss=1
-    list_queue:
+    if:
+      - tmdb_year > now.year - 1: reject
+    #list_queue:
+    list_match:
+      from:
+        - movie_list: trakt-movies
+      single_match: no
+#      - trakt_list:
+#          account: '{{secrets.trakt.account}}'
+#          list: '{{secrets.trakt.movies}}'
+#          type: movies
+#          strip_dates: yes
+    list_remove:
       - trakt_list:
           account: '{{secrets.trakt.account}}'
           list: '{{secrets.trakt.movies}}'
-          type: movies
-          strip_dates: yes
 
 
 
-  ##### move-series-task: Move series from downloads folder to respective folders, along with existing subtitles and adding the files to the subtitle queue
+  ##### move-series task: Move series from downloads folder to respective folders, along with existing subtitles and adding the files to the subtitle queue
   #
-  move-series-task:
+  move-series:
     priority: 21
     template:
       - disable-seen-retry-template
@@ -524,14 +549,14 @@ tasks:
 #    parsing:
 #      series: guessit
 
-    plugin_priority:
-      # manipulate must fix the titles before metainfo_series.
-      manipulate: 255
-    manipulate:
-      - title:
-          replace:
-            regexp: '^[^a-z0-9]*11\.22\.63[^a-z0-9]*'
-            format: '11-22-63.'
+#    plugin_priority:
+#      # manipulate must fix the titles before metainfo_series.
+#      manipulate: 255
+#    manipulate:
+#      - title:
+#          replace:
+#            regexp: '^[^a-z0-9]*11\.22\.63[^a-z0-9]*'
+#            format: '11-22-63.'
     accept_all: yes
     regexp:
       reject:
@@ -556,19 +581,22 @@ tasks:
         - sub
         - en.srt
         - en.sub
-      clean_source: 100
-    subtitle_queue:
-      action: add
-      path: "{{output}}"
+      clean_source: 50
+
+    list_add:
+      - subtitle_list:
+          list: subtitles
+          path: "{{output}}"
+          remove_after: 7 days
     exec:
       on_exit:
         for_accepted: find '/{{secrets.folder.downseries}}'* -type d -empty -delete
 
 
 
-  ##### move-movies-task: Move movies from downloads folder to the movies folder, along with possible subtitles and adding the files to the subtitle queue
+  ##### move-movies task: Move movies from downloads folder to the movies folder, along with possible subtitles and adding the files to the subtitle queue
   #
-  move-movies-task:
+  move-movies:
     priority: 26
     template:
       - disable-seen-retry-template
@@ -607,26 +635,37 @@ tasks:
         - en.srt
         - en.sub
       clean_source: 100
-    subtitle_queue:
-      action: add
-      path: "{{output}}"
+    list_add:
+      - subtitle_list:
+          list: subtitles
+          path: "{{output}}"
+          remove_after: 7 days
     exec:
       on_exit:
         for_accepted: find '/{{secrets.folder.downmovies}}'* -type d -empty -delete
 
 
-  ##### download-subtitles-task: Download subtitles for the previously queued files
+  ##### download-subtitles task: Download subtitles for the previously queued files
   #
   # Might have issues until final release of subliminal 2.0, see: http://discuss.flexget.com/t/subliminal-error/2023/
   #
-  download-subtitles-task:
+  download-subtitles:
     priority: 31
     template:
       - disable-seen-retry-template
-    subtitle_queue: emit
-    accept_all: yes
+
+#    subtitle_queue: emit
+#    accept_all: yes
+
+    subtitle_list:
+      list: subtitles
+    list_match:
+      from:
+        - subtitle_list:
+            list: subtitles
     subliminal:
       exact_match: no
+      single: no
       languages:
         - ita
         - eng
@@ -638,9 +677,9 @@ tasks:
         - tvsubtitles
 
 
-  ##### clean-transmission-task: Clean finished torrents from transmission
+  ##### clean-transmission task: Clean finished torrents from transmission
   #
-  clean-transmission-task:
+  clean-transmission:
     priority: 33
     interval: 1 day
     disable: details
@@ -651,9 +690,9 @@ tasks:
       transmission_seed_limits: yes
 
 
-  ##### update-series-list-task: Update trakt series list and thetvdb series list from local series folders, excluding the ones that already ended
+  ##### update-series-list task: Update trakt series list and thetvdb series list from local series folders, excluding the ones that already ended
   #
-  update-series-list-task:
+  update-series-list:
     priority: 41
     interval: 1 day
     template:
@@ -676,8 +715,8 @@ tasks:
           remove: yes
       - title:
           replace:
-            regexp: '^[^a-z0-9]*11\.22\.63[^a-z0-9]*'
-            format: '11-22-63.'
+            regexp: '$'
+            format: ' S01E01'
     accept_all: yes
     if:
       - tvdb_status == 'Ended': reject
@@ -685,32 +724,33 @@ tasks:
       - trakt_list:
           account: '{{secrets.trakt.account}}'
           list: '{{secrets.trakt.series}}'
+          type: shows
 
 
-  ##### clean-series-list-task: Clean the series that already ended from trakt series list and thetvdb series list
+  ##### clean-series-list task: Clean the series that already ended from trakt series list and thetvdb series list
   #
-  clean-series-list-task:
-    priority: 43
-    interval: 1 day
-    delay: 8 day
-    template:
-      - disable-seen-retry-template
-      - series-metainfo-template
-      - pushbullet-template
-    trakt_list:
-      account: '{{secrets.trakt.account}}'
-      list: '{{secrets.trakt.series}}'
-      type: shows
-    if:
-      - tvdb_status == 'Ended': accept
-    list_remove:
-      - trakt_list:
-          account: '{{secrets.trakt.account}}'
-          list: '{{secrets.trakt.series}}'
+#  DISABLED-clean-series-list:
+#    priority: 43
+#    interval: 1 day
+#    delay: 8 day
+#    template:
+#      - disable-seen-retry-template
+#      - series-metainfo-template
+#      - pushbullet-template
+#    trakt_list:
+#      account: '{{secrets.trakt.account}}'
+#      list: '{{secrets.trakt.series}}'
+#      type: shows
+#    if:
+#      - tvdb_status == 'Ended': accept
+#    list_remove:
+#      - trakt_list:
+#          account: '{{secrets.trakt.account}}'
+#          list: '{{secrets.trakt.series}}'
 
-  ##### final_actions-task: final actions
+  ##### final_actions task: final actions
   #
-  final_actions-task:
+  final_actions:
     priority: 100
     no_entries_ok: yes
     exec:

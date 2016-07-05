@@ -161,7 +161,7 @@ templates:
     torrent_alive:
       min_seeds: 1
       reject_for: 15 minutes
-    magnets: no
+#    magnets: no
     # Might need to disable if you are getting errors connecting to https sources
     # Can remove if you upgrade to python 2.7.9+ or install requests[security]
     #verify_ssl_certificates: no
@@ -532,6 +532,9 @@ tasks:
   ##### move-series task: Move series from downloads folder to respective folders, along with existing subtitles and adding the files to the subtitle queue
   #
   move-series:
+    free_space:
+      path: '/{{secrets.folder.root}}'
+      space: 1024
     priority: 21
     template:
       - disable-seen-retry-template
@@ -597,6 +600,9 @@ tasks:
   ##### move-movies task: Move movies from downloads folder to the movies folder, along with possible subtitles and adding the files to the subtitle queue
   #
   move-movies:
+    free_space:
+      path: '/{{secrets.folder.root}}'
+      space: 1024
     priority: 26
     template:
       - disable-seen-retry-template
@@ -623,8 +629,8 @@ tasks:
 #      filename: "{{movie_name|pathscrub}} ({{movie_year}}){% if quality|default(False) %}: - [{{quality}}]{% endif %}"
 
       # trakt lookup
-      to: "/{{secrets.folder.movies}}{{trakt_name|pathscrub}} ({{trakt_year}})"
-      filename: "{{trakt_name|pathscrub}} ({{trakt_year}}){% if quality|default(False) %}: - [{{quality}}]{% endif %}"
+      to: "/{{secrets.folder.movies}}{{trakt_movie_name|pathscrub}} ({{trakt_movie_year}})"
+      filename: "{{trakt_movie_name|pathscrub}} ({{trakt_movie_year}}){% if quality|default(False) %}: - [{{quality}}]{% endif %}"
 
       # tmdb lookup
 #      to: "/{{secrets.folder.movies}}{{tmdb_name|pathscrub}} ({{tmdb_year}})"

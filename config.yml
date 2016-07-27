@@ -483,7 +483,7 @@ tasks:
     list_match:
       from:
         - movie_list: trakt-movies
-      single_match: no
+      single_match: yes
 #     - trakt_list:
 #          account: '{{secrets.trakt.account}}'
 #          list: '{{secrets.trakt.movies}}'
@@ -537,7 +537,7 @@ tasks:
     list_match:
       from:
         - movie_list: trakt-movies
-      single_match: no
+      single_match: yes
 #      - trakt_list:
 #          account: '{{secrets.trakt.account}}'
 #          list: '{{secrets.trakt.movies}}'

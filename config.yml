@@ -40,35 +40,35 @@ templates:
       path: '/{{secrets.folder.root}}'
       space: 4096
     # Requires log_filter plugin
-    log_filter:
-      task:
-        - marked seen
-        - because quality already downloaded
-        - because episode has already been downloaded
-        - Task does not have any
-      move:
-        - left because it exceeds safety value
-        - does not exists (anymore)
-      urlrewriter:
-        - URL rewritten to
-      enzyme.mkv:
-        - Reading
-        - Processing
-      enzyme.parsers.ebml.core:
-        - ignored
-        - Maximum level
-      subliminal.video:
-        - Scanning video
-      parser_internal:
-        - appears to be an episode pack
-      content_size:
-        - rejecting
-      search_rss:
-        - Error
-      assume_quality:
-        - ""
-      utils.requests:
-        - Waiting
+#    log_filter:
+#      task:
+#        - marked seen
+#        - because quality already downloaded
+#        - because episode has already been downloaded
+#        - Task does not have any
+#      move:
+#        - left because it exceeds safety value
+#        - does not exists (anymore)
+#      urlrewriter:
+#        - URL rewritten to
+#      enzyme.mkv:
+#        - Reading
+#        - Processing
+#      enzyme.parsers.ebml.core:
+#        - ignored
+#        - Maximum level
+#      subliminal.video:
+#        - Scanning video
+#      parser_internal:
+#        - appears to be an episode pack
+#      content_size:
+#        - rejecting
+#      search_rss:
+#        - Error
+#      assume_quality:
+#        - ""
+#      utils.requests:
+#        - Waiting
 
   ##### email-template: Mail config
   #
@@ -340,8 +340,17 @@ tasks:
 #      - rss:
 #          url: https://kickass.unblocked.la/tv/?rss=1
 #          all_entries: yes
+#      - rss:
+#          url: https://kat.cr/tv/?rss=1
+#          all_entries: yes
+#      - rss:
+#          url: https://kat.am/tv/?rss=1
+#          all_entries: yes
+#      - rss:
+#          url: https://bitleechers.net/rss.php?cats=53,54,55,82&type=dl&passkey={{secrets.private.bitleechers_password}}
+#          all_entries: yes
       - rss:
-          url: https://kat.cr/tv/?rss=1
+          url: http://extratorrent.cc/rss.xml?type=popular&cid=8
           all_entries: yes
 
 
@@ -367,8 +376,12 @@ tasks:
       from:
         - torrentz: good
 #        - search_rss: https://kickass.unblocked.la/usearch/{{search_term}}/?rss=1
-        - search_rss: https://kat.cr/usearch/{{search_term}}/?rss=1
+#        - search_rss: https://kat.cr/usearch/{{search_term}}/?rss=1
+#        - search_rss: https://kat.am/usearch/{{search_term}}/?rss=1
+#        - search_rss: https://bitleechers.net/rss.php?cats=53,54,55,82&type=dl&passkey={{secrets.private.bitleechers_password}}
         - piratebay: yes
+        - rarbg:
+            category: [1, 18, 41]
 
 
   ##### clean-movie-queue task: Remove manually movies downloaded from the movie queue and trakt list
@@ -461,8 +474,11 @@ tasks:
 #            strip_dates: yes
       from:
         - torrentz: good
+        - rarbg:
+            category: [44, 42]
 #        - search_rss: https://kickass.unblocked.la/usearch/{{search_term}}/?rss=1
-        - search_rss: https://kat.cr/usearch/{{search_term}}/?rss=1
+#        - search_rss: https://kat.cr/usearch/{{search_term}}/?rss=1
+#        - search_rss: https://kat.am/usearch/{{search_term}}/?rss=1
 #    list_queue:
     list_match:
       from:
@@ -508,8 +524,13 @@ tasks:
       from:
 #        - flexget_archive: [movies]
         - torrentz: good
+        - rarbg:
+            category: [48, 45]
+
 #        - search_rss: https://kickass.unblocked.la/usearch/{{search_term}}/?rss=1
-        - search_rss: https://kat.cr/usearch/{{search_term}}/?rss=1
+#        - search_rss: https://kat.cr/usearch/{{search_term}}/?rss=1
+#        - search_rss: https://kat.am/usearch/{{search_term}}/?rss=1
+
     if:
       - tmdb_year > now.year - 1: reject
     #list_queue:

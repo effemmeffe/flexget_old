@@ -113,7 +113,7 @@ templates:
     movie_list: trakt-movies
     quality: 1080p webdl+
     content_size:
-      min: 800
+      min: 400
       max: 8000
 
   ##### movies-720p-template: Movies config
@@ -124,7 +124,7 @@ templates:
     movie_list: trakt-movies
     quality: 720p webdl+
     content_size:
-      min: 500
+      min: 400
       max: 5000
 
   ##### pushbullet-template: Pushbullet config
@@ -166,7 +166,6 @@ templates:
     # Can remove if you upgrade to python 2.7.9+ or install requests[security]
     #verify_ssl_certificates: no
     domain_delay:
-      torrentz.eu: 1 seconds
       unblocked.la: 1 seconds
 
   ##### transmission-global-template: Transmission config
@@ -335,9 +334,6 @@ tasks:
 #      - pushbullet-template
     inputs:
 #      - rss:
-#          url: http://torrentz.eu/feedA?good&q=tv
-#          all_entries: yes
-#      - rss:
 #          url: https://kickass.unblocked.la/tv/?rss=1
 #          all_entries: yes
 #      - rss:
@@ -370,11 +366,12 @@ tasks:
       release_estimations: ignore
       interval: 15 minutes
       what:
-        - next_series_episodes: yes
+#        - next_series_episodes: yes
+        - next_series_episodes:
+            from_start: yes
         #- emit_series:
         #    from_start: yes
       from:
-        - torrentz: good
 #        - search_rss: https://kickass.unblocked.la/usearch/{{search_term}}/?rss=1
 #        - search_rss: https://kat.cr/usearch/{{search_term}}/?rss=1
 #        - search_rss: https://kat.am/usearch/{{search_term}}/?rss=1
@@ -473,7 +470,6 @@ tasks:
 #            type: movies
 #            strip_dates: yes
       from:
-        - torrentz: good
         - rarbg:
             category: [44, 42]
 #        - search_rss: https://kickass.unblocked.la/usearch/{{search_term}}/?rss=1
@@ -523,7 +519,6 @@ tasks:
 #            strip_dates: yes
       from:
 #        - flexget_archive: [movies]
-        - torrentz: good
         - rarbg:
             category: [48, 45]
 
@@ -601,10 +596,11 @@ tasks:
       #filename: "{{series_name|escape|replace('&#39;', '')|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}{% if proper_count %} PROPER{% if proper_count > 1 %}{{proper_count}}{% endif %}{% endif %}"
 
       along:
-        - srt
-        - sub
-        - en.srt
-        - en.sub
+        files:
+          - srt
+          - sub
+          - en.srt
+          - en.sub
       clean_source: 50
 
     list_add:
@@ -657,10 +653,11 @@ tasks:
 #      to: "/{{secrets.folder.movies}}{{tmdb_name|pathscrub}} ({{tmdb_year}})"
 #      filename: "{{tmdb_name|pathscrub}} ({{tmdb_year}}){% if quality|default(False) %}: - [{{quality}}]{% endif %}"
       along:
-        - srt
-        - sub
-        - en.srt
-        - en.sub
+        files:
+          - srt
+          - sub
+          - en.srt
+          - en.sub
       clean_source: 100
     list_add:
       - subtitle_list:
@@ -708,13 +705,26 @@ tasks:
   #
   clean-transmission:
     priority: 33
-    interval: 1 day
-    disable: details
+#    disable: details
     clean_transmission:
+      port: 9091
       host: '{{ secrets.transmission.host }}'
       username: '{{ secrets.transmission.user }}'
       password: '{{ secrets.transmission.password }}'
-      transmission_seed_limits: yes
+      transmission_seed_limits: no
+
+
+
+#  clean-transmission:
+#    priority: 33
+#    interval: 1 day
+#    disable: details
+#    clean_transmission:
+#      host: '{{ secrets.transmission.host }}'
+#      username: '{{ secrets.transmission.user }}'
+#      password: '{{ secrets.transmission.password }}'
+#      transmission_seed_limits: yes
+##      disable: [details](/details)
 
 
   ##### update-series-list task: Update trakt series list and thetvdb series list from local series folders, excluding the ones that already ended

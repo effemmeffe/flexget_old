@@ -470,6 +470,7 @@ tasks:
 #            type: movies
 #            strip_dates: yes
       from:
+        - piratebay: yes
         - rarbg:
             category: [44, 42]
 #        - search_rss: https://kickass.unblocked.la/usearch/{{search_term}}/?rss=1
@@ -519,6 +520,7 @@ tasks:
 #            strip_dates: yes
       from:
 #        - flexget_archive: [movies]
+        - piratebay: yes
         - rarbg:
             category: [48, 45]
 
@@ -581,6 +583,7 @@ tasks:
       reject:
         - \btrailer\b
         - \bsample\b
+        - RARBG.*
     move:
       # trakt lookup
       #to: "/media/Tera/Library/TV/{{trakt_series_name|escape|replace('&#39;', '')|pathscrub}}/S{{trakt_season|pad(2)}}/"
@@ -601,6 +604,8 @@ tasks:
           - sub
           - en.srt
           - en.sub
+        subdirs:
+          - Subs
       clean_source: 50
 
     list_add:
@@ -640,6 +645,7 @@ tasks:
       reject:
         - \btrailer\b
         - \bsample\b
+        - RARBG.*
     move:
       # builtin lookup
 #      to: "/{{secrets.folder.movies}}{{movie_name|pathscrub}} ({{movie_year}})"
@@ -658,6 +664,8 @@ tasks:
           - sub
           - en.srt
           - en.sub
+        subdirs:
+          - Subs
       clean_source: 100
     list_add:
       - subtitle_list:

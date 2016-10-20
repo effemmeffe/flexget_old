@@ -583,7 +583,7 @@ tasks:
       reject:
         - \btrailer\b
         - \bsample\b
-        - RARBG.*
+        - RARBG.COM
     move:
       # trakt lookup
       #to: "/media/Tera/Library/TV/{{trakt_series_name|escape|replace('&#39;', '')|pathscrub}}/S{{trakt_season|pad(2)}}/"
@@ -602,6 +602,7 @@ tasks:
         files:
           - srt
           - sub
+          - idx
           - en.srt
           - en.sub
         subdirs:
@@ -611,7 +612,6 @@ tasks:
     list_add:
       - subtitle_list:
           list: subtitles
-          path: "{{output}}"
           remove_after: 7 days
     exec:
       on_exit:
@@ -645,7 +645,7 @@ tasks:
       reject:
         - \btrailer\b
         - \bsample\b
-        - RARBG.*
+        - RARBG.COM
     move:
       # builtin lookup
 #      to: "/{{secrets.folder.movies}}{{movie_name|pathscrub}} ({{movie_year}})"
@@ -662,6 +662,7 @@ tasks:
         files:
           - srt
           - sub
+          - idx
           - en.srt
           - en.sub
         subdirs:
@@ -670,7 +671,6 @@ tasks:
     list_add:
       - subtitle_list:
           list: subtitles
-          path: "{{output}}"
           remove_after: 7 days
     exec:
       on_exit:
@@ -699,8 +699,8 @@ tasks:
       exact_match: no
       single: no
       languages:
-        - ita
-        - eng
+        - it
+        - en
       providers:
         - opensubtitles
         - addic7ed

@@ -25,8 +25,7 @@ schedules:
 web_server:
   bind: 0.0.0.0
   port: 5050
-api: yes
-webui: yes
+  web_ui: yes
 
 ##### TEMPLATES
 #
@@ -131,9 +130,9 @@ templates:
   #
   pushbullet-template:
     pushbullet:
-      apikey: '{{secrets.pushbullet.api}}'
+      api_key: '{{secrets.pushbullet.api}}'
       title: "[Flexget] {{task}}"
-      body: "{{title}}"
+      message: "{{title}}"
 
   ##### regex-template: Common rejections
   #
@@ -592,14 +591,14 @@ tasks:
       # tvdb lookup
 #      to: "/media/Tera/Library/TV/{{tvdb_series_name|escape|replace('&#39;', '')|pathscrub}}/S{{tvdb_season|pad(2)}}/"
       to: "/{{secrets.folder.series}}{{tvdb_series_name|escape|replace('&#39;', '')|pathscrub}}/S{{tvdb_season|pad(2)}}/"
-      filename: "{{tvdb_series_name|escape|replace('&#39;', '')|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}{% if proper_count %} PROPER{% if proper_count > 1 %}{{proper_count}}{% endif %}{% endif %}"
+      rename: "{{tvdb_series_name|escape|replace('&#39;', '')|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}{% if proper_count %} PROPER{% if proper_count > 1 %}{{proper_count}}{% endif %}{% endif %}"
 
       # builtin lookup
       #to: "/media/Tera/Library/TV/{{series_name|escape|replace('&#39;', '')|pathscrub}}/S{{series_season|pad(2)}}/"
       #filename: "{{series_name|escape|replace('&#39;', '')|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}{% if proper_count %} PROPER{% if proper_count > 1 %}{{proper_count}}{% endif %}{% endif %}"
 
       along:
-        files:
+        extensions:
           - srt
           - sub
           - idx
@@ -607,7 +606,7 @@ tasks:
           - en.sub
         subdirs:
           - Subs
-      clean_source: 50
+      clean_source: 1
 
     list_add:
       - subtitle_list:
@@ -653,13 +652,13 @@ tasks:
 
       # trakt lookup
       to: "/{{secrets.folder.movies}}{{trakt_movie_name|pathscrub}} ({{trakt_movie_year}})"
-      filename: "{{trakt_movie_name|pathscrub}} ({{trakt_movie_year}}){% if quality|default(False) %}: - [{{quality}}]{% endif %}"
+      rename: "{{trakt_movie_name|pathscrub}} ({{trakt_movie_year}}){% if quality|default(False) %}: - [{{quality}}]{% endif %}"
 
       # tmdb lookup
 #      to: "/{{secrets.folder.movies}}{{tmdb_name|pathscrub}} ({{tmdb_year}})"
 #      filename: "{{tmdb_name|pathscrub}} ({{tmdb_year}}){% if quality|default(False) %}: - [{{quality}}]{% endif %}"
       along:
-        files:
+        extensions:
           - srt
           - sub
           - idx
@@ -667,7 +666,7 @@ tasks:
           - en.sub
         subdirs:
           - Subs
-      clean_source: 100
+      clean_source: 1
     list_add:
       - subtitle_list:
           list: subtitles

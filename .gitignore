@@ -12,6 +12,7 @@ trakt-movies
 trakt-movies.*
 trakt-series
 trakt-series.*
+cached_resources
 
 
 # all files to be ignored #

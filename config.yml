@@ -1,25 +1,25 @@
 secrets: my_secrets.yml
 
 
-#schedules:
-#  # Run every task every 1 hour
-#  - tasks: '*'
-#    interval:
-#      hours: 1
-
 schedules:
-  - tasks: ['populate-*', 'clean-*', 'update-*']
-    schedule:
-      hour: 0
-  - tasks: ['purge-*', 'fill-*', '*-rss']
-    schedule:
-      minute: 0,30
-  - tasks: ['*-discover', '*-manual', final_actions]
-    schedule:
-      hour: '*/2'
-  - tasks: ['move-*', download-subtitles]
-    schedule:
-      minute: 15,45
+  # Run every task every 1 hour
+  - tasks: '*'
+    interval:
+      hours: 1
+
+#schedules:
+#  - tasks: ['populate-*', 'clean-*', 'update-*']
+#    schedule:
+#      hour: 0
+#  - tasks: ['purge-*', 'fill-*', '*-rss']
+#    schedule:
+#      minute: 0,30
+#  - tasks: ['*-discover', '*-manual', final_actions]
+#    schedule:
+#      hour: '*/2'
+#  - tasks: ['move-*', download-subtitles]
+#    schedule:
+#      minute: 15,45
 
 
 web_server:
@@ -244,11 +244,11 @@ tasks:
     template:
       - series-metainfo-template
     seen: local
-    filesystem:
-      path: '/{{secrets.folder.series}}'
-      recursive: yes
-      retrieve: files
-      regexp: '.*\.(avi|mkv|mp4)$'
+#    filesystem:
+#      path: '/{{secrets.folder.series}}'
+#      recursive: yes
+#      retrieve: files
+#      regexp: '.*\.(avi|mkv|mp4)$'
     accept_all: yes
     configure_series:
       from:

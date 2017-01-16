@@ -1,4 +1,4 @@
-secrets: my_secrets.yml
+variables: my_secrets.yml
 
 
 schedules:
@@ -36,7 +36,7 @@ templates:
     no_entries_ok: yes
     pathscrub: windows
     free_space:
-      path: '/{{secrets.folder.root}}'
+      path: '/{? folder.root ?}'
       space: 4096
     # Requires log_filter plugin
 #    log_filter:
@@ -71,16 +71,16 @@ templates:
 
   ##### email-template: Mail config
   #
-  email-template:
-    email:
-      from: '{{ secrets.gmail.user }}'
-      to: '{{ secrets.gmail.user }}'
-      smtp_host: smtp.gmail.com
-      smtp_port: 465
-      smtp_username: '{{ secrets.gmail.user }}'
-      smtp_password: '{{ secrets.gmail.password }}'
-      smtp_tls: yes
-      smtp_ssl: yes
+#  email-template:
+#    email:
+#      from: '{? gmail.user ?}'
+#      to: '{? gmail.user ?}'
+#      smtp_host: smtp.gmail.com
+#      smtp_port: 465
+#      smtp_username: '{? gmail.user ?}'
+#      smtp_password: '{? gmail.password ?}'
+#      smtp_tls: yes
+#      smtp_ssl: yes
 
   ##### series-config-template: Series config
   #
@@ -128,11 +128,20 @@ templates:
 
   ##### pushbullet-template: Pushbullet config
   #
+#  pushbullet-template:
+#    pushbullet:
+#      api_key: '{? pushbullet.api ?}'
+#      title: "[Flexget] {{task}}"
+#      message: "{{title}}"
   pushbullet-template:
-    pushbullet:
-      api_key: '{{secrets.pushbullet.api}}'
-      title: "[Flexget] {{task}}"
-      message: "{{title}}"
+    notify:
+      entries:
+        title: "[Flexget] {{task}}"
+        message: "{{title}}"
+        via:
+          - pushbullet:
+              api_key: '{? pushbullet.api ?}'
+
 
   ##### regex-template: Common rejections
   #
@@ -172,9 +181,9 @@ templates:
   transmission-global-template:
     transmission:
       port: 9091
-      host: '{{secrets.transmission.host}}'
-      username: '{{secrets.transmission.user}}'
-      password: '{{secrets.transmission.password}}'
+      host: '{? transmission.host ?}'
+      username: '{? transmission.user ?}'
+      password: '{? transmission.password ?}'
       main_file_only: yes
       include_subs: yes
       skip_files:
@@ -188,17 +197,9 @@ templates:
   #
   transmission-series-template:
     transmission:
-      # trakt lookup
-      #content_filename: "{{trakt_series_name|default(series_name)|pathscrub}} - {{trakt_ep_id|default(series_id)}}{% if trakt_ep_name|default(False) %}: - {{trakt_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}{% if proper_count %} PROPER{% if proper_count > 1 %}{{proper_count}}{% endif %}{% endif %}"
-      #path: "/{{secrets.folder.downseries}}{{trakt_series_name|default(series_name)|pathscrub}}/S{{trakt_season|pad(2)}}/"
-
       # thetvdb lookup
       content_filename: "{{tvdb_series_name|default(series_name)|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}{% if proper_count %} PROPER{% if proper_count > 1 %}{{proper_count}}{% endif %}{% endif %}"
-      path: "/{{secrets.folder.downseries}}{{tvdb_series_name|default(series_name)|pathscrub}}/S{{tvdb_season|pad(2)}}/"
-
-      # builtin lookup
-      #content_filename: "{{series_name|default(series_name)|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}{% if proper_count %} PROPER{% if proper_count > 1 %}{{proper_count}}{% endif %}{% endif %}"
-      #path: "/{{secrets.folder.downseries}}{{series_name|default(series_name)|pathscrub}}/S{{tvdb_season|pad(2)}}/"
+      path: "/{? folder.downseries ?}{{tvdb_series_name|default(series_name)|pathscrub}}/S{{tvdb_season|pad(2)}}/"
 
   ##### transmission-movies-template: Transmission movies config
   #
@@ -206,7 +207,7 @@ templates:
     transmission:
 #      content_filename: "{{tmdb_name|pathscrub}} ({{tmdb_year}}){% if quality|default(False) %}: - [{{quality}}]{% endif %}{% if proper_count %} PROPER{% if proper_count > 1 %}{{proper_count}}{% endif %}{% endif %}"
       content_filename: "{{tmdb_name|pathscrub}} ({{tmdb_year}}){% if quality|default(False) %}: - [{{quality}}]{% endif %}"
-      path: "/{{secrets.folder.downmovies}}{{movie_name|pathscrub}}"
+      path: "/{? folder.downmovies ?}{{movie_name|pathscrub}}"
 
   ##### disable-seen-retry-template: Disable builtins for some tasks
   #
@@ -244,16 +245,11 @@ tasks:
     template:
       - series-metainfo-template
     seen: local
-#    filesystem:
-#      path: '/{{secrets.folder.series}}'
-#      recursive: yes
-#      retrieve: files
-#      regexp: '.*\.(avi|mkv|mp4)$'
     accept_all: yes
     configure_series:
       from:
         filesystem:
-          path: '/{{secrets.folder.series}}'
+          path: '/{? folder.series ?}'
           retrieve: dirs
       settings:
         tracking: no
@@ -279,8 +275,8 @@ tasks:
       - disable-seen-retry-template
       - series-metainfo-template
     trakt_list:
-      account: '{{secrets.trakt.account}}'
-      list: '{{secrets.trakt.series}}'
+      account: '{? trakt.account ?}'
+      list: '{? trakt.series ?}'
       type: shows
     accept_all: yes
 #    plugin_priority:
@@ -310,7 +306,7 @@ tasks:
       - transmission-series-template
 #      - pushbullet-template
     filesystem:
-      path: '/{{secrets.folder.watchseries}}'
+      path: '/{? folder.watchseries ?}'
       mask: '*.torrent'
     parsing:
       series: guessit
@@ -342,7 +338,7 @@ tasks:
 #          url: https://kat.am/tv/?rss=1
 #          all_entries: yes
 #      - rss:
-#          url: https://bitleechers.net/rss.php?cats=53,54,55,82&type=dl&passkey={{secrets.private.bitleechers_password}}
+#          url: https://bitleechers.net/rss.php?cats=53,54,55,82&type=dl&passkey={? private.bitleechers_password ?}
 #          all_entries: yes
       - rss:
           url: http://extratorrent.cc/rss.xml?type=popular&cid=8
@@ -374,7 +370,7 @@ tasks:
 #        - search_rss: https://kickass.unblocked.la/usearch/{{search_term}}/?rss=1
 #        - search_rss: https://kat.cr/usearch/{{search_term}}/?rss=1
 #        - search_rss: https://kat.am/usearch/{{search_term}}/?rss=1
-#        - search_rss: https://bitleechers.net/rss.php?cats=53,54,55,82&type=dl&passkey={{secrets.private.bitleechers_password}}
+#        - search_rss: https://bitleechers.net/rss.php?cats=53,54,55,82&type=dl&passkey={? private.bitleechers_password ?}
         - piratebay: yes
         - rarbg:
             category: [1, 18, 41]
@@ -389,7 +385,7 @@ tasks:
       - disable-seen-retry-template
       - movies-metainfo-template
     filesystem:
-      path: '/{{secrets.folder.movies}}'
+      path: '/{? folder.movies ?}'
       recursive: yes
       retrieve: files
       regexp: '.*\.(avi|mkv|mp4)$'
@@ -397,8 +393,8 @@ tasks:
     list_remove:
       - movie_list: trakt-movies
       - trakt_list:
-          account: '{{secrets.trakt.account}}'
-          list: '{{secrets.trakt.movies}}'
+          account: '{? .trakt.account ?}'
+          list: '{? trakt.movies ?}'
     parsing:
       movie: guessit
 
@@ -408,8 +404,8 @@ tasks:
   fill-movie-queue:
     priority: 12
     trakt_list:
-      account: '{{secrets.trakt.account}}'
-      list: '{{secrets.trakt.movies}}'
+      account: '{? trakt.account ?}'
+      list: '{? trakt.movies ?}'
       type: movies
       strip_dates: yes
     accept_all: yes
@@ -428,7 +424,7 @@ tasks:
       - transmission-movies-template
 #      - pushbullet-template
     filesystem:
-      path: '/{{secrets.folder.watchmovies}}'
+      path: '/{? folder.watchmovies ?}'
       mask: '*.torrent'
     parsing:
       movie: guessit
@@ -439,8 +435,8 @@ tasks:
     list_remove:
       - movie_list: trakt-movies
       - trakt_list:
-          account: '{{secrets.trakt.account}}'
-          list: '{{secrets.trakt.movies}}'
+          account: '{? trakt.account ?}'
+          list: '{? trakt.movies ?}'
 
 
   ##### download-movies-1080p-discover task: Download 1080p movies
@@ -456,18 +452,13 @@ tasks:
       - transmission-movies-template
 #      - pushbullet-template
     exists_movie:
-      - '/{{secrets.folder.downmovies}}'
-      - '/{{secrets.folder.movies}}'
+      - '/{? folder.downmovies ?}'
+      - '/{? folder.movies ?}'
     discover:
       release_estimations: ignore
       interval: 15 minutes
       what:
         - movie_list: trakt-movies
-#        - trakt_list:
-#            account: '{{secrets.trakt.account}}'
-#            list: '{{secrets.trakt.movies}}'
-#            type: movies
-#            strip_dates: yes
       from:
         - piratebay: yes
         - rarbg:
@@ -480,15 +471,10 @@ tasks:
       from:
         - movie_list: trakt-movies
       single_match: yes
-#     - trakt_list:
-#          account: '{{secrets.trakt.account}}'
-#          list: '{{secrets.trakt.movies}}'
-#          type: movies
-#          strip_dates: yes
     list_remove:
       - trakt_list:
-          account: '{{secrets.trakt.account}}'
-          list: '{{secrets.trakt.movies}}'
+          account: '{? trakt.account ?}'
+          list: '{? trakt.movies ?}'
 
 
   ##### download-movies-720p-discover task: Download 720p movies with 1 day delay from higher quality
@@ -505,18 +491,13 @@ tasks:
       - transmission-movies-template
 #      - pushbullet-template
     exists_movie:
-      - '/{{secrets.folder.downmovies}}'
-      - '/{{secrets.folder.movies}}'
+      - '/{? folder.downmovies ?}'
+      - '/{? folder.movies ?}'
     discover:
       release_estimations: ignore
       interval: 15 minutes
       what:
         - movie_list: trakt-movies
-#        - trakt_list:
-#            account: '{{secrets.trakt.account}}'
-#            list: '{{secrets.trakt.movies}}'
-#            type: movies
-#            strip_dates: yes
       from:
 #        - flexget_archive: [movies]
         - piratebay: yes
@@ -534,15 +515,10 @@ tasks:
       from:
         - movie_list: trakt-movies
       single_match: yes
-#      - trakt_list:
-#          account: '{{secrets.trakt.account}}'
-#          list: '{{secrets.trakt.movies}}'
-#          type: movies
-#          strip_dates: yes
     list_remove:
       - trakt_list:
-          account: '{{secrets.trakt.account}}'
-          list: '{{secrets.trakt.movies}}'
+          account: '{? trakt.account ?}'
+          list: '{? trakt.movies ?}'
 
 
 
@@ -550,7 +526,7 @@ tasks:
   #
   move-series:
     free_space:
-      path: '/{{secrets.folder.root}}'
+      path: '/{? folder.root ?}'
       space: 1024
     priority: 21
     template:
@@ -560,8 +536,8 @@ tasks:
 #      - email-template
     filesystem:
       path:
-        - '/{{secrets.folder.downseries}}'
-        - '/{{secrets.folder.downmanual}}'
+        - '/{? folder.downseries ?}'
+        - '/{? folder.downmanual ?}'
       recursive: yes
       retrieve: files
       regexp: '.*\.(avi|mkv|mp4)$'
@@ -584,18 +560,9 @@ tasks:
         - \bsample\b
         - RARBG.COM
     move:
-      # trakt lookup
-      #to: "/media/Tera/Library/TV/{{trakt_series_name|escape|replace('&#39;', '')|pathscrub}}/S{{trakt_season|pad(2)}}/"
-      #filename: "{{trakt_series_name|escape|replace('&#39;', '')|pathscrub}} - {{trakt_ep_id|default(series_id)}}{% if trakt_ep_name|default(False) %}: - {{trakt_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}{% if proper_count %} PROPER{% if proper_count > 1 %}{{proper_count}}{% endif %}{% endif %}"
-
       # tvdb lookup
-#      to: "/media/Tera/Library/TV/{{tvdb_series_name|escape|replace('&#39;', '')|pathscrub}}/S{{tvdb_season|pad(2)}}/"
-      to: "/{{secrets.folder.series}}{{tvdb_series_name|escape|replace('&#39;', '')|pathscrub}}/S{{tvdb_season|pad(2)}}/"
+      to: "/{? folder.series ?}{{tvdb_series_name|escape|replace('&#39;', '')|pathscrub}}/S{{tvdb_season|pad(2)}}/"
       rename: "{{tvdb_series_name|escape|replace('&#39;', '')|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}{% if proper_count %} PROPER{% if proper_count > 1 %}{{proper_count}}{% endif %}{% endif %}"
-
-      # builtin lookup
-      #to: "/media/Tera/Library/TV/{{series_name|escape|replace('&#39;', '')|pathscrub}}/S{{series_season|pad(2)}}/"
-      #filename: "{{series_name|escape|replace('&#39;', '')|pathscrub}} - {{tvdb_ep_id|default(series_id)}}{% if tvdb_ep_name|default(False) %}: - {{tvdb_ep_name|escape|replace('&#39;', '')|pathscrub}}{% endif %}{% if quality|default(False) %}: - [{{quality}}]{% endif %}{% if proper_count %} PROPER{% if proper_count > 1 %}{{proper_count}}{% endif %}{% endif %}"
 
       along:
         extensions:
@@ -614,7 +581,7 @@ tasks:
           remove_after: 7 days
     exec:
       on_exit:
-        for_accepted: find '/{{secrets.folder.downseries}}'* -type d -empty -delete
+        for_accepted: find '/{? folder.downseries ?}'* -type d -empty -delete
 
 
 
@@ -622,7 +589,7 @@ tasks:
   #
   move-movies:
     free_space:
-      path: '/{{secrets.folder.root}}'
+      path: '/{? folder.root ?}'
       space: 1024
     priority: 26
     template:
@@ -632,8 +599,8 @@ tasks:
 #      - email-template
     filesystem:
       path:
-        - '/{{secrets.folder.downmovies}}'
-        - '/{{secrets.folder.downmanual}}'
+        - '/{? folder.downmovies ?}'
+        - '/{? folder.downmanual ?}'
       recursive: yes
       retrieve: files
       regexp: '.*\.(avi|mkv|mp4)$'
@@ -646,17 +613,10 @@ tasks:
         - \bsample\b
         - RARBG.COM
     move:
-      # builtin lookup
-#      to: "/{{secrets.folder.movies}}{{movie_name|pathscrub}} ({{movie_year}})"
-#      filename: "{{movie_name|pathscrub}} ({{movie_year}}){% if quality|default(False) %}: - [{{quality}}]{% endif %}"
-
       # trakt lookup
-      to: "/{{secrets.folder.movies}}{{trakt_movie_name|pathscrub}} ({{trakt_movie_year}})"
+      to: "/{? folder.movies ?}{{trakt_movie_name|pathscrub}} ({{trakt_movie_year}})"
       rename: "{{trakt_movie_name|pathscrub}} ({{trakt_movie_year}}){% if quality|default(False) %}: - [{{quality}}]{% endif %}"
 
-      # tmdb lookup
-#      to: "/{{secrets.folder.movies}}{{tmdb_name|pathscrub}} ({{tmdb_year}})"
-#      filename: "{{tmdb_name|pathscrub}} ({{tmdb_year}}){% if quality|default(False) %}: - [{{quality}}]{% endif %}"
       along:
         extensions:
           - srt
@@ -673,7 +633,7 @@ tasks:
           remove_after: 7 days
     exec:
       on_exit:
-        for_accepted: find '/{{secrets.folder.downmovies}}'* -type d -empty -delete
+        for_accepted: find '/{? folder.downmovies ?}'* -type d -empty -delete
 
 
   ##### download-subtitles task: Download subtitles for the previously queued files
@@ -721,19 +681,6 @@ tasks:
       transmission_seed_limits: no
 
 
-
-#  clean-transmission:
-#    priority: 33
-#    interval: 1 day
-#    disable: details
-#    clean_transmission:
-#      host: '{{ secrets.transmission.host }}'
-#      username: '{{ secrets.transmission.user }}'
-#      password: '{{ secrets.transmission.password }}'
-#      transmission_seed_limits: yes
-##      disable: [details](/details)
-
-
   ##### update-series-list task: Update trakt series list and thetvdb series list from local series folders, excluding the ones that already ended
   #
   update-series-list:
@@ -748,7 +695,7 @@ tasks:
       manipulate: -252
       list_add: -253
     filesystem:
-      path: '/{{secrets.folder.series}}'
+      path: '/{? folder.series ?}'
       recursive: yes
       retrieve: files
       regexp: '.*\.(avi|mkv|mp4)$'
@@ -766,31 +713,10 @@ tasks:
       - tvdb_status == 'Ended': reject
     list_add:
       - trakt_list:
-          account: '{{secrets.trakt.account}}'
-          list: '{{secrets.trakt.series}}'
+          account: '{? trakt.account ?}'
+          list: '{? trakt.series ?}'
           type: shows
 
-
-  ##### clean-series-list task: Clean the series that already ended from trakt series list and thetvdb series list
-  #
-#  DISABLED-clean-series-list:
-#    priority: 43
-#    interval: 1 day
-#    delay: 8 day
-#    template:
-#      - disable-seen-retry-template
-#      - series-metainfo-template
-#      - pushbullet-template
-#    trakt_list:
-#      account: '{{secrets.trakt.account}}'
-#      list: '{{secrets.trakt.series}}'
-#      type: shows
-#    if:
-#      - tvdb_status == 'Ended': accept
-#    list_remove:
-#      - trakt_list:
-#          account: '{{secrets.trakt.account}}'
-#          list: '{{secrets.trakt.series}}'
 
   ##### final_actions task: final actions
   #

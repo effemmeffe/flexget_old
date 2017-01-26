@@ -374,6 +374,8 @@ tasks:
         - piratebay: yes
         - rarbg:
             category: [1, 18, 41]
+        - extratorrent:
+            category: tv
 
 
   ##### clean-movie-queue task: Remove manually movies downloaded from the movie queue and trakt list
@@ -709,8 +711,8 @@ tasks:
             regexp: '$'
             format: ' S01E01'
     accept_all: yes
-    if:
-      - tvdb_status == 'Ended': reject
+#    if:
+#      - tvdb_status == 'Ended': reject
     list_add:
       - trakt_list:
           account: '{? trakt.account ?}'

@@ -237,6 +237,11 @@ templates:
 #
 tasks:
 
+  test_task:
+    series:
+      - Six:
+          exact: yes
+
   ##### populate-series-db task: Populates the series database with the files on the library, to avoid duplicate downloads
   #
   populate-series-db:
@@ -718,6 +723,33 @@ tasks:
           account: '{? trakt.account ?}'
           list: '{? trakt.series ?}'
           type: shows
+
+
+  ##### clean-series-list-manual task
+  #
+  clean-series-list-manual:
+    manual: yes
+    #template:
+    #  - series-metainfo-template
+    trakt_lookup:
+      account: '{? trakt.account ?}'
+      username: '{? trakt.user ?}'
+    trakt_list:
+      account: '{? trakt.account ?}'
+      list: '{? trakt.series ?}'
+      type: shows
+    disable: seen #is necessary to not get cross-contamination effects with caching
+    if:
+      - trakt_collected and trakt_series_status in ['ended', 'cancelled']: accept
+    list_add:
+      - trakt_list:
+          account: '{? trakt.account ?}'
+          list: '{? trakt.archive ?}'
+          type: shows
+    list_remove:
+      - trakt_list:
+          account: '{? .trakt.account ?}'
+          list: '{? trakt.series ?}'
 
 
   ##### final_actions task: final actions

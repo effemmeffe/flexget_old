@@ -236,12 +236,6 @@ templates:
 ##### TASKS
 #
 tasks:
-
-  test_task:
-    series:
-      - Six:
-          exact: yes
-
   ##### populate-series-db task: Populates the series database with the files on the library, to avoid duplicate downloads
   #
   populate-series-db:

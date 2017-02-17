@@ -394,7 +394,7 @@ tasks:
     list_remove:
       - movie_list: trakt-movies
       - trakt_list:
-          account: '{? .trakt.account ?}'
+          account: '{? trakt.account ?}'
           list: '{? trakt.movies ?}'
     parsing:
       movie: guessit
@@ -730,6 +730,7 @@ tasks:
       username: '{? trakt.user ?}'
     trakt_list:
       account: '{? trakt.account ?}'
+      username: '{? trakt.user ?}'
       list: '{? trakt.series ?}'
       type: shows
     disable: seen #is necessary to not get cross-contamination effects with caching
@@ -742,7 +743,7 @@ tasks:
           type: shows
     list_remove:
       - trakt_list:
-          account: '{? .trakt.account ?}'
+          account: '{? trakt.account ?}'
           list: '{? trakt.series ?}'
 
 

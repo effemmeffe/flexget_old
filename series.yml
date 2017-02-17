@@ -3,3 +3,5 @@ series:
       alternate_name: Shameless (US)
   - House of cards:
       alternate_name: House of cards (US)
+  - Six:
+      exact: yes

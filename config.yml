@@ -93,7 +93,7 @@ templates:
         entry_list: trakt-series
       settings:
         identified_by: ep
-        timeframe: 16 hours
+        timeframe: 15 hours
         target: hdtv 720p
         quality: webrip+ 720p
         propers: 16 hours
